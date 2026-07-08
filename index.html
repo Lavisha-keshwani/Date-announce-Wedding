@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yash & Vanshika — Save the Date</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Tangerine:wght@700&family=Tiro+Devanagari+Hindi&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --maroon: #7c1a2d;
+      --maroon-dark: #4a101c;
+      --gold: #b28a50;
+      --gold-light: #e6c887;
+      --gold-dark: #8f6d24;
+      --cream: #fffdfa;
+      --ivory: #fcfaf7;
+      --text: #503f42;
+      --text-light: #7b6468;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body,
+    html {
+      width: 100%;
+      min-height: 100vh;
+      background: #111;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    /* Ambient animated background behind the card */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #631c2a 0%, #1a080d 100%);
+      z-index: 0;
+    }
+
+    .sparkles {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(var(--gold) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.15;
+      animation: drift 60s linear infinite;
+    }
+
+    @keyframes drift {
+      0% {
+        background-position: 0 0;
+      }
+
+      100% {
+        background-position: 1000px 1000px;
+      }
+    }
+
+    /* Scene holding both envelope and card */
+    .scene {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      padding: 30px 0;
+    }
+
+    /* ENVELOPE STYLES */
+    .envelope-layer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .envelope-layer.fading {
+      opacity: 0;
+      transform: translate(-50%, -60%) scale(0.9);
+      pointer-events: none;
+    }
+
+    .envelope {
+      position: relative;
+      width: min(340px, 90vw);
+      height: 240px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .env-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #8a1f33 0%, #52111f 100%);
+      border-radius: 8px;
+      border: 1px solid var(--gold);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+    }
+
+    .env-body::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(220, 185, 110, 0.4);
+      border-radius: 4px;
+    }
+
+    .env-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 130px;
+      background: linear-gradient(160deg, #7c1a2d, #420d19);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.6, 0, 0.3, 1);
+      z-index: 5;
+      border-top: 1px solid var(--gold);
+    }
+
+    .envelope.opened .env-flap {
+      transform: rotateX(-175deg);
+    }
+
+    .seal {
+      position: absolute;
+      top: 95px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, var(--gold-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #420d19;
+      z-index: 6;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      transition: opacity 0.3s ease;
+    }
+
+    .seal::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border: 1px dashed rgba(66, 13, 25, 0.4);
+      border-radius: 50%;
+    }
+
+    .envelope.opened .seal {
+      opacity: 0;
+    }
+
+    .hint {
+      position: absolute;
+      bottom: -40px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      transition: opacity 0.4s ease;
+    }
+
+    .envelope.opened~.hint {
+      opacity: 0;
+    }
+
+
+    /* The main Card Container */
+    .card-wrapper {
+      position: relative;
+      z-index: 10;
+      width: min(95vw, 900px);
+      height: min(90vh, 1200px);
+      aspect-ratio: 3/4;
+      background: var(--cream);
+      border-radius: 12px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(201, 162, 75, 0.2);
+      display: none;
+      /* hidden initially */
+      flex-direction: row;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.9) translateY(40px);
+      transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .card-wrapper.show {
+      display: flex;
+    }
+
+    .card-wrapper.animate-in {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Inner Gold Border */
+    .card-wrapper::after {
+      content: "";
+      position: absolute;
+      inset: 15px;
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Double inner border */
+    .card-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      border: 1px solid rgba(201, 162, 75, 0.4);
+      border-radius: 6px;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Left Side: Divine Image */
+    .image-side {
+      width: 48%;
+      height: 100%;
+      position: relative;
+      background-image: url('bg.png');
+      background-size: cover;
+      background-position: center 20%;
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+      z-index: 5;
+    }
+
+    /* Right Side: Text Content */
+    .text-side {
+      width: 52%;
+      height: 100%;
+      position: relative;
+      z-index: 6;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: var(--cream);
+    }
+
+    /* Reusable fade-in classes for elements inside card */
+    .reveal {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    .card-wrapper.animate-in .reveal {
+      animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Typographic Styles - PERFECTLY ALIGNED */
+    .sanskrit {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 13px;
+      color: var(--maroon);
+      margin-bottom: 25px;
+    }
+
+    .save-the-date {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
+      letter-spacing: 5px;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .names-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 25px;
+      line-height: 1.1;
+    }
+
+    .script-name {
+      font-family: 'Great Vibes', cursive;
+      font-size: 68px;
+      color: var(--maroon);
+      font-weight: 400;
+      margin: -10px 0;
+    }
+
+    .ampersand {
+      font-family: 'Tangerine', cursive;
+      font-size: 40px;
+      color: var(--gold);
+      margin: 0px 0;
+    }
+
+    .getting-married {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--maroon);
+      margin-bottom: 35px;
+    }
+
+    /* Dates Layout */
+    .dates-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 35px;
+    }
+
+    .date-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 80px;
+    }
+
+    .date-number {
+      font-family: 'Cinzel', serif;
+      font-size: 44px;
+      font-weight: 700;
+      color: var(--maroon);
+      line-height: 1;
+      position: relative;
+    }
+
+    .date-number sup {
+      font-size: 14px;
+      position: absolute;
+      top: 4px;
+      right: -24px;
+      font-weight: 700;
+    }
+
+    .date-month {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .date-divider-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .date-divider-col .line {
+      width: 1px;
+      height: 14px;
+      background: var(--gold);
+    }
+
+    .date-divider-col .heart {
+      color: var(--gold);
+      font-size: 10px;
+    }
+
+    /* Venue Styles */
+    .venue-label {
+      font-family: 'Tangerine', cursive;
+      font-size: 36px;
+      color: var(--gold-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .venue-label::before,
+    .venue-label::after {
+      content: "";
+      width: 35px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .venue-name {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--maroon);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .venue-address {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      line-height: 1.8;
+      letter-spacing: 1.5px;
+      color: var(--text-light);
+      font-weight: 500;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+
+    .invite-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      letter-spacing: 1px;
+      line-height: 1.8;
+      color: var(--maroon);
+      font-weight: 600;
+      text-transform: uppercase;
+      max-width: 85%;
+    }
+
+    /* Floating Petals Layer */
+    .petals-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .petal {
+      position: absolute;
+      top: -10%;
+      background: var(--maroon);
+      border-radius: 15px 0 15px 0;
+      opacity: 0.6;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.7;
+      }
+
+      90% {
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: translate(80px, 110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Reset button for testing/viewing again */
+    .reset-btn {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: var(--cream);
+      border: 1px solid var(--gold);
+      color: var(--gold-dark);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .reset-btn:hover {
+      background: #fff;
+    }
+
+    .card-wrapper.animate-in~.reset-btn {
+      opacity: 1;
+      pointer-events: auto;
+      transition-delay: 2.5s;
+    }
+
+    /* Responsive Design for Mobile Devices */
+    @media (max-width: 800px) {
+      .card-wrapper {
+        flex-direction: column;
+        height: auto;
+        min-height: 85vh;
+        width: 92vw;
+        aspect-ratio: auto;
+      }
+
+      .image-side {
+        width: 100%;
+        height: 48vh;
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+        background-position: center top;
+      }
+
+      .text-side {
+        width: 100%;
+        height: auto;
+        padding: 0 20px 45px;
+        margin-top: -80px;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* Mobile Text Adjustments */
+      .sanskrit {
+        font-size: 11px;
+        margin-bottom: 15px;
+      }
+
+      .save-the-date {
+        font-size: 12px;
+        margin-bottom: 12px;
+        letter-spacing: 3px;
+      }
+
+      .names-container {
+        margin-bottom: 15px;
+      }
+
+      .script-name {
+        font-size: 46px;
+        margin: -5px 0;
+      }
+
+      .ampersand {
+        font-size: 28px;
+      }
+
+      .getting-married {
+        font-size: 9px;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+      }
+
+      .dates-container {
+        margin-bottom: 25px;
+        gap: 15px;
+      }
+
+      .date-number {
+        font-size: 32px;
+      }
+
+      .date-number sup {
+        font-size: 10px;
+        right: -14px;
+      }
+
+      .date-month {
+        font-size: 9px;
+        margin-top: 5px;
+      }
+
+      .venue-label {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .venue-label::before,
+      .venue-label::after {
+        width: 25px;
+      }
+
+      .venue-name {
+        font-size: 14px;
+        margin-bottom: 5px;
+        letter-spacing: 2px;
+      }
+
+      .venue-address {
+        font-size: 9px;
+        margin-bottom: 20px;
+      }
+
+      .invite-text {
+        font-size: 8px;
+        line-height: 1.6;
+        max-width: 95%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ambient-bg">
+    <div class="sparkles"></div>
+  </div>
+
+  <div class="scene">
+    <!-- Envelope Layer -->
+    <div class="envelope-layer" id="envelopeLayer">
+      <div class="envelope" id="envelope">
+        <div class="env-flap" id="flap"></div>
+        <div class="env-body"></div>
+        <div class="seal">Y&V</div>
+      </div>
+      <p class="hint" id="hint">Tap envelope to open</p>
+    </div>
+
+    <!-- The Invitation Card -->
+    <div class="card-wrapper" id="inviteCard">
+      <!-- Image Side -->
+      <div class="image-side"></div>
+
+      <!-- Text Side -->
+      <div class="text-side">
+        <div class="sanskrit reveal" style="animation-delay: 0.8s;">॥ श्री गणेशाय नमः ॥</div>
+
+        <div class="save-the-date reveal" style="animation-delay: 0.9s;">SAVE THE DATE</div>
+
+        <div class="names-container">
+          <div class="script-name reveal" style="animation-delay: 1.0s;">Yash</div>
+          <div class="ampersand reveal" style="animation-delay: 1.1s;">&</div>
+          <div class="script-name reveal" style="animation-delay: 1.2s;">Vanshika</div>
+        </div>
+
+        <div class="getting-married reveal" style="animation-delay: 1.3s;">Are going to get married</div>
+
+        <div class="dates-container reveal" style="animation-delay: 1.4s;">
+          <div class="date-box">
+            <div class="date-number">27<sup>TH</sup></div>
+            <div class="date-month">JANUARY<br>2027</div>
+          </div>
+          <div class="date-divider-col">
+            <div class="line"></div>
+            <div class="heart">♥</div>
+            <div class="line"></div>
+          </div>
+          <div class="date-box">
+            <div class="date-number">28<sup>TH</sup></div>
+            <div class="date-month">JANUARY<br>2027</div>
+          </div>
+        </div>
+
+        <div class="venue-label reveal" style="animation-delay: 1.5s;">Venue</div>
+        <div class="venue-name reveal" style="animation-delay: 1.6s;">AS Resorts</div>
+        <div class="venue-address reveal" style="animation-delay: 1.7s;">
+          Airport Road, Khajuraho<br>Madhya Pradesh
+        </div>
+
+        <div class="invite-text reveal" style="animation-delay: 1.8s;">
+          You all are cordially invited<br>to join the wedding ceremony<br>and bless the couple.
+        </div>
+      </div>
+
+      <!-- Floating Petals Layer inside card -->
+      <div class="petals-layer" id="petals"></div>
+    </div>
+
+    <button class="reset-btn" id="resetBtn">View Envelope Again</button>
+  </div>
+
+  <script>
+    const envelopeLayer = document.getElementById('envelopeLayer');
+    const envelope = document.getElementById('envelope');
+    const inviteCard = document.getElementById('inviteCard');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Envelope click handler
+    envelope.addEventListener('click', () => {
+      // 1. Open the flap
+      envelope.classList.add('opened');
+
+      // 2. Wait for flap to open, then fade out envelope and fade in card
+      setTimeout(() => {
+        envelopeLayer.classList.add('fading');
+
+        setTimeout(() => {
+          envelopeLayer.style.display = 'none';
+
+          // Show card
+          inviteCard.classList.add('show');
+
+          // Trigger CSS reflow
+          void inviteCard.offsetWidth;
+
+          // Add animate-in class to scale up and fade in
+          inviteCard.classList.add('animate-in');
+        }, 500); // Wait for envelope to fade down
+      }, 700); // Wait for flap to fully open
+    });
+
+    // Reset button logic (just to let user view it again easily)
+    resetBtn.addEventListener('click', () => {
+      inviteCard.classList.remove('animate-in');
+      setTimeout(() => {
+        inviteCard.classList.remove('show');
+        envelopeLayer.style.display = 'flex';
+
+        void envelopeLayer.offsetWidth;
+
+        envelopeLayer.classList.remove('fading');
+        envelope.classList.remove('opened');
+      }, 800);
+    });
+
+    // Generate floating petals
+    const petalsContainer = document.getElementById('petals');
+    const petalCount = window.innerWidth > 800 ? 25 : 12;
+    const colors = ['#e7a6ad', '#d97f8c', '#f3c9cd', '#ffffff'];
+
+    for (let i = 0; i < petalCount; i++) {
+      const petal = document.createElement('div');
+      petal.classList.add('petal');
+
+      // Random attributes
+      const startLeft = Math.random() * 100;
+      const duration = 6 + Math.random() * 8; // 6s to 14s
+      const delay = Math.random() * 5;
+      const size = 8 + Math.random() * 10;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      petal.style.left = `${startLeft}%`;
+      petal.style.animationDuration = `${duration}s`;
+      petal.style.animationDelay = `${delay}s`;
+      petal.style.width = `${size}px`;
+      petal.style.height = `${size}px`;
+      petal.style.backgroundColor = color;
+
+      // Random blur and opacity for depth
+      if (Math.random() > 0.5) {
+        petal.style.filter = `blur(${Math.random() * 2}px)`;
+      }
+
+      petalsContainer.appendChild(petal);
+    }
+  </script>
+</body>
+
+</html>
